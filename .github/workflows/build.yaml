@@ -13,14 +13,11 @@ jobs:
         uses: zauguin/install-texlive@v3
         with:
           package_file: |-
-            # Core
             scheme-small
             latexmk
-            # Engines / lua
             luatex
             luaotfload
             fontspec
-            # Packages likely needed by the style
             biblatex
             biber
             lmodern

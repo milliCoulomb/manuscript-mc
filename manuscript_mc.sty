@@ -1,0 +1,383 @@
+NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{manuscript_mc}[2025/01/01 Manuscript class for PhD]
+
+\RequirePackage[
+  backend=biber,
+  style=numeric-comp,
+  sorting=none,
+  bibencoding=utf8,
+  giveninits=true,
+  maxcitenames=1,
+  mincitenames=1,
+  maxbibnames=99,
+  doi=true,
+  isbn=true,
+  url=false
+]{biblatex}
+\RequirePackage{color}
+\RequirePackage[
+  colorlinks=true,
+  urlcolor=Black,
+  anchorcolor=Black,
+  citecolor=Black,
+  filecolor=Black,
+  linkcolor=Black,
+  menucolor=Black,
+  linktocpage=true,
+  pdfproducer=medialab,
+  pdfa=true,
+  pdfusetitle
+]{hyperref}
+\RequirePackage{emptypage}
+
+\usepackage{textcomp}
+
+\usepackage{marginnote,sidenotes,fancyhdr,geometry}
+\usepackage{chngcntr}
+\counterwithin{sidenote}{chapter}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage[many]{tcolorbox}
+\usepackage[version=4]{mhchem}
+\usepackage{siunitx}
+\usepackage{dimnum}
+\usepackage{subcaption}
+
+\usepackage{lmodern,mathrsfs}
+
+\usepackage[shortlabels]{enumitem}
+
+\usepackage{mathtools,amsthm,amssymb,amsfonts,bm}
+\usepackage{thmtools,amsmath}
+\usepackage{array,tabularx,booktabs}
+\usepackage{graphicx,wrapfig,float,caption}
+\usepackage{setspace,multicol}
+\usepackage{tikz,tkz-euclide, physics}                           % Physics Presets
+\usetikzlibrary{intersections,fit,positioning,patterns,decorations.text,arrows.meta,decorations.pathmorphing,shapes.geometric,spy,backgrounds,shapes.symbols}
+\usepackage{pgfplots}
+
+\usepackage{pgfplotstable}
+\pgfplotsset{compat=newest}
+\usepgfplotslibrary{groupplots}
+\usepgfplotslibrary{fillbetween}
+
+\usepackage{etoolbox}    % For patching commands
+\usepackage{lastpage}
+\usepackage{pdfpages}
+
+
+\DeclareGraphicsExtensions{.pdf,.png,.jpg}
+
+\geometry{
+  paper=a4paper,
+  marginparsep=4.3mm,
+  marginparwidth=43mm,
+  inner=23.75mm,
+  top=25mm,
+  bottom=25mm,
+  textwidth=134mm,
+  textheight=222mm,
+  headheight=14pt,
+  headsep=6mm,
+  footskip=10mm
+}
+
+\pagestyle{fancy}
+\newlength{\myoddoffset}
+\setlength{\myoddoffset}{\marginparwidth + \marginparsep}
+\renewcommand{\sectionmark}[1]{\markboth{#1}{}}
+
+\fancypagestyle{fancynotes}{
+  \fancyhf{}
+  % \fancyheadoffset[rh]{\myoddoffset}
+  \renewcommand{\headrulewidth}{0pt}
+  \fancyhead[L]{\textsc{\leftmark}}
+  \fancyhead[R]{\textsc{\rightmark}}
+  \fancyfoot[C]{\footnotesize \thepage}
+  % \fancyhead[R]{\footnotesize \textit{\rightmark}~~~~ \thepage}
+  % \fancyhead[L]{\thepage~~~~\footnotesize \textit{\leftmark}}
+}
+
+\fancypagestyle{fancypart}{
+  \fancyhf{}
+  %\fancyfootoffset[rh]{\myoddoffset}
+  \renewcommand{\headrulewidth}{0pt}
+  % \fancyfoot[L]{\footnotesize \thepage}
+  \fancyfoot[C]{\footnotesize \thepage}
+}
+
+\newenvironment{fullpage}{
+  \smallskip\noindent\begin{minipage}{\textwidth+\marginparwidth+\marginparsep}\hrule\smallskip\smallskip
+}{
+  \hrule\end{minipage}\vspace{.1in}
+}
+
+
+\definecolor{lightgray}{HTML}{E6E6E6}
+
+\newtcolorbox{examplebox}{ % Renamed from 'example' to 'examplebox'
+    boxrule=0pt,
+    boxsep=0pt,
+    colback={White!95!Gray},
+    enhanced jigsaw,
+    borderline west={1pt}{0pt}{Black},
+    sharp corners,
+    before skip=10pt,
+    after skip=10pt,
+    left=5pt,
+    right=5pt,
+    breakable,
+}
+
+\newtcolorbox{claim}[1]{
+    boxrule=0.5pt,
+    colback=lightgray,
+    sharp corners,
+    title=#1,
+    coltitle=lightgray, % Changed to Black for better readability
+    fonttitle=\bfseries,
+    breakable=true,
+}
+
+\newenvironment{claimproof}[1]{\par\noindent\underline{Proof:}\space#1}{\hfill $\blacksquare$}
+
+\newtcolorbox{summary}{
+    boxrule=0.0pt,
+    colback=lightgray,
+    sharp corners,
+    breakable=true,
+}
+
+\NewDocumentCommand{\SonataPart}{m m m}{
+  \clearpage
+  \newgeometry{
+    inner=3cm,
+    outer=3cm,
+    top=3cm,
+    bottom=3cm
+  }
+  \IfNoValueTF{#2}
+    {\part{#1}\label{#3}}
+    {\part{#1 -- \textit{#2}}\label{#3}}
+}
+\newenvironment{partintro}
+  {}
+  {\loadgeometry{defaultgeometry}\clearpage}
+
+\renewcommand{\thechapter}{\arabic{chapter}}
+\renewcommand*{\raggedleftmarginnote}{\noindent}
+\renewcommand*{\raggedrightmarginnote}{\noindent}
+
+\newcommand{\mn}[1]{\textsuperscript{\thesidenote}{}\marginnote{\textsuperscript{\thesidenote}{}\itshape\footnotesize #1}\refstepcounter{sidenote}}
+\newcommand{\en}[1]{\marginnote{\footnotesize{#1}}}
+
+\newcommand{\lec}[2]{
+  {\setlength{\marginparwidth}{.07\paperwidth}
+   % Removed \reversemarginpar so that margin notes use the default (outer) placement.
+   \reversemarginpar
+   \marginnote{
+     \centering
+     \footnotesize{
+       \textsf{\bfseries #1}\\#2
+     }
+   }
+  }
+}
+
+\newcommand{\sn}[1]{\sidenote{\itshape\footnotesize #1}}
+
+\newcommand\note[2][]{%
+  \if!#1!%
+    \stepcounter{footnote}\footnotetext{#2}%
+  \else%
+    {\renewcommand\thefootnote{#1}\footnotetext{#2}}%
+  \fi
+}
+
+
+\DeclareFixedFont\trfont{OT1}{phv}{b}{sc}{11}
+
+% First page
+\renewcommand{\maketitle}{
+  \includepdf[
+    pages=1-4,
+  ]{../titlepage/titlepage.pdf}
+  \setcounter{page}{5}
+}
+\newcommand{\insertcustomtoc}{%
+  \clearpage
+  \newgeometry{
+    inner=3cm,   % marge intérieure
+    outer=3cm,   % marge extérieure
+    top=3cm,     % marge supérieure
+    bottom=3cm   % marge inférieure
+  }%
+  \pagestyle{myplain}
+  \tableofcontents
+  \restoregeometry
+}
+
+% Page layout
+\renewcommand{\baselinestretch}{1.1}\normalsize % Slightly increased line spacing for better readability
+\setlength\lineskip{1\p@}
+\setlength\parindent{1.2\parindent}
+\setlength\normallineskip{1\p@}
+\setlength\parskip{0\p@ \@plus \p@}
+\@lowpenalty   51
+\@medpenalty  151
+\@highpenalty 301
+\widowpenalty 1000
+\clubpenalty 1000
+
+\setcounter{topnumber}{4}
+\renewcommand\topfraction{1}
+\setcounter{bottomnumber}{1}
+\renewcommand\bottomfraction{.6}
+\setcounter{totalnumber}{5}
+\renewcommand\textfraction{0}
+\renewcommand\floatpagefraction{1}
+% \addtolength\textheight{\topskip}
+
+\marginparpush 6\p@
+% \topmargin   .05\paperheight
+
+\setlength\arraycolsep{2\p@}
+\setlength\tabcolsep{6\p@}
+\setlength\arrayrulewidth{.4\p@}
+\setlength\doublerulesep{2\p@}
+\setlength\tabbingsep{\labelsep}
+\skip\@mpfootins = \skip\footins
+\setlength\fboxsep{3\p@}
+\setlength\fboxrule{.4\p@}
+
+% No dots in the table of contents
+\renewcommand{\@dotsep}{10000}
+
+\newcommand\ps@myplain{
+  \renewcommand\@oddhead{}
+  \renewcommand\@evenhead{}
+}
+\let\ps@plain=\ps@myplain
+
+% No header or footer in the title page
+\newcommand\ps@titlepage{\renewcommand\@oddfoot{}\renewcommand\@oddhead{}}
+
+% Number equations after the sections
+\renewcommand{\theequation}{\thesection.\arabic{equation}}
+\numberwithin{equation}{section}
+
+% Headings style
+\renewcommand\section{\@startsection{section}{1}{\z@}%
+  {-3.5ex \@plus -1.3ex \@minus -.7ex}%
+  {2.3ex \@plus.4ex \@minus .4ex}%
+  {\normalfont\normalsize}}
+
+\renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
+  {-2.3ex\@plus -1ex \@minus -.5ex}%
+  {1.2ex \@plus .3ex \@minus .3ex}%
+  {\normalfont\normalsize}}
+
+  \renewcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
+  {-2.3ex\@plus -1ex \@minus -.5ex}%
+  {1.2ex \@plus .3ex \@minus .3ex}%
+  {\normalfont\normalsize\bfseries}}  % Makes it bold
+\setcounter{secnumdepth}{3}  % Ensures numbering appears
+
+\renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
+  {1.75ex \@plus1ex \@minus.2ex}%
+  {-1em}%
+  {\normalfont\normalsize\bfseries}} % Makes it bold
+
+\renewcommand\subparagraph{\@startsection{subparagraph}{5}{\parindent}%
+  {1.75ex \@plus1ex \@minus .2ex}%
+  {-1em}%
+  {\normalfont\normalsize}}
+
+\RequirePackage{titlesec}
+
+% Section formatting
+\titleformat{name=\section}[block]
+  {\normalfont}
+  {\normalsize\textsc{Section \thesection}} % Changed from \footnotesize to \normalsize
+  {0.5em} % Space between the number and the title (in em units)
+  {\normalsize}
+  [\vspace{-10pt}\color{Black}\rule{\textwidth}{.6pt}]
+
+\titleformat{name=\section,numberless}[hang]
+  {\normalfont}
+  {}
+  {0pt}
+  {\normalsize}
+
+% Subsection formatting
+\titleformat{name=\subsection}[block]
+  {\normalfont}
+  {\normalsize\textsc{Subsection \thesubsection}} % Changed from \footnotesize to \small
+  {0.5em} % Space between the number and the title (in em units)
+  {\normalsize}
+  [\vspace{-5pt}\color{Black}\rule{\textwidth}{.6pt}]
+
+% Subsubsection formatting
+\titleformat{name=\subsubsection}[block]
+  {\normalfont}
+  {\normalsize\textsc{Subsubsection \thesubsubsection}} % Changed from \footnotesize to \small
+  {0.5em} % Space between the number and the title (in em units)
+  {\normalsize}
+  [\vspace{-5pt}\color{Black}\rule{\textwidth}{.6pt}]
+
+% Chapter formatting
+\titleformat{\chapter}[hang]{
+  \thispagestyle{fancypart}\large\bfseries
+}{
+  \marginnote{
+    \begin{tcolorbox}[
+      width=\marginparwidth,
+      height=\marginparwidth/2,
+      colback=lightgray,
+      colframe=black,
+      boxrule=0.5pt,
+      valign=center,
+      halign=center,
+      sharp corners
+    ]
+      {\color{Black}\bfseries\Huge\thechapter}
+    \end{tcolorbox}
+  }[-0.9in] % Adjusted offset
+}{0pt}{\Huge\bfseries}
+
+% Caption of figure and table
+\def\fnum@figure{\textbf{\figurename\nobreakspace\thefigure}}
+\def\fnum@table{\textbf{\tablename\nobreakspace\thetable}}
+
+% Redefining \@makecaption to have captions with \small font size
+\long\def\@makecaption#1#2{%
+  \vskip\abovecaptionskip
+  \sbox\@tempboxa{\small #1. #2}%
+  \ifdim \wd\@tempboxa >\hsize
+    \small #1. #2\par
+  \else
+    \global \@minipagefalse
+    \hb@xt@\hsize{\hfil\box\@tempboxa\hfil}%
+  \fi
+  \vskip\belowcaptionskip
+}
+
+\newtheorem{example}{Example}
+
+\makeatletter
+
+% 1) Keep the usual "clear to an odd page" but use a custom page style
+\renewcommand\part{%
+  \cleardoublepage           % ensures a new (odd) page in two-sided
+  \thispagestyle{fancypart}% or 'plain' if you prefer
+  \global\@topnum\z@         % standard housekeeping
+  \@afterindentfalse         %
+  \secdef\@part\@spart
+}
+
+\def\@endpart{%
+  \vskip 3em   % some vertical space below the part heading
+  \@afterheading
+}
+
+
+\makeatother

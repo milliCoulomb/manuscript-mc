@@ -1,0 +1,17 @@
+# latexmk / TeX build
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.run.xml
+*.toc
+*.synctex.gz
+*.nav
+*.snm
+*Notes.bib
+*.pdf
+!demo/*.pdf

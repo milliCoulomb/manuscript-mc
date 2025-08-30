@@ -1,0 +1,63 @@
+\documentclass[10pt,a4paper,twoside,openright]{book}
+\usepackage{manuscript_mc}
+
+% --- Demo-only: make title page self-contained (override style's \maketitle)
+\makeatletter
+\renewcommand{\maketitle}{%
+  \thispagestyle{empty}%
+  \begin{center}
+    {\LARGE\bfseries manuscript-mc\\[0.5em]}
+    {\large A minimal guide to the thesis style}\\[1.5em]
+    {\normalsize Version: 2025-01-01}\par\vfill
+    {\large Mathis Caprais}\\[0.25em]
+    {\normalsize (Demo build)}\par\vfill
+    {\footnotesize This demo overrides the package's default title page,\newline which otherwise includes an external PDF.}
+  \end{center}
+  \clearpage
+}
+\makeatother
+
+% --- Units used in your example
+\DeclareSIUnit\pcm{pcm}
+\DeclareSIUnit\year{yr}
+\DeclareSIUnit\day{d}
+\DeclareSIUnit\barn{b}
+\DeclareSIUnit\atm{atm}
+\DeclareSIUnit\SSI{SI}
+\DeclareSIUnit\gpm{gpm}
+\DeclareSIUnit\USD{$}
+
+% --- Small helpers like in your master
+\newcommand{\keff}{k_{\text{eff}}}
+\newcommand{\Omegavec}{\boldsymbol{\Omega}}
+
+% --- Bibliography
+\addbibresource{bibliography.bib}
+
+\begin{document}
+\maketitle
+\insertcustomtoc
+\pagestyle{fancynotes}
+
+\chapter*{What is this?}
+This document is both a demo and a guide to the \texttt{manuscript\_mc} style. It compiles out of the box and showcases margins, part pages, headings, boxes, figures, PGFPlots, and citations.
+
+\begin{summary}
+\begin{itemize}
+  \item How to install and load the style.
+  \item How to structure a thesis (parts/chapters) with \verb|\SonataPart|.
+  \item How to use margin notes (\verb|\mn|, \verb|\sn|, \verb|\lec|).
+  \item How to cite with BibLaTeX and print a bibliography.
+  \item How to set up CI so your PDF is built on GitHub.
+\end{itemize}
+\end{summary}
+
+\chapter{Loading the Style}
+Place \texttt{manuscript\_mc.sty} at the project root or in your local texmf tree and load it in your main file:
+
+\begin{examplebox}
+\begin{verbatim}
+\documentclass[10pt,a4paper,twoside,openright]{book}
+\usepackage{manuscript_mc}
+\end{verbatim}
+\end{examplebox}

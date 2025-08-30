@@ -1,0 +1,62 @@
+name: Build LaTeX demo
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up TeX Live
+        uses: zauguin/install-texlive@v3
+        with:
+          package_file: |-
+            # Core
+            scheme-small
+            latexmk
+            # Engines / lua
+            luatex
+            luaotfload
+            fontspec
+            # Packages likely needed by the style
+            biblatex
+            biber
+            lmodern
+            fancyhdr
+            geometry
+            xcolor
+            tcolorbox
+            mhchem
+            siunitx
+            pgf
+            pgfplots
+            physics
+            titlesec
+            subcaption
+            booktabs
+            wrapfig
+            caption
+            etoolbox
+            lastpage
+            pdfpages
+            marginnote
+            sidenotes
+            amsmath
+            amsfonts
+            amssymb
+            mathtools
+            enumitem
+            multicol
+            array
+            tabularx
+      - name: Build
+        working-directory: demo
+        run: |
+          latexmk -lualatex -pdf -interaction=nonstopmode main.tex
+      - name: Upload PDF artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: manuscript-mc-demo-pdf
+          path: demo/main.pdf
